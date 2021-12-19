@@ -1,5 +1,6 @@
 import axios from 'axios';
 import qs from 'qs';
+import globalData from '../api/global_data.js';
 
 // axios拦截器
 const service = axios.create({
@@ -7,7 +8,7 @@ const service = axios.create({
     // easy-mock服务挂了，暂时不使用了
 
     // 设置baseURL
-    baseURL: 'http://47.113.192.155:8443',
+    baseURL: globalData.baseURL,
     // 超时时间，超过5秒未响应，则返回错误
     timeout: 5000
 });

@@ -54,23 +54,15 @@
                                         type="selection"
                                         width="55">
                                         </el-table-column>
-                                        <!-- <el-table-column
-                                        prop="userNickName"
-                                        label="昵称"
-                                        width="120">
-                                        <template slot-scope="scope">{{ scope.data.userNickName }}</template>
-                                        </el-table-column> -->
+                                        
+                                         
                                         <el-table-column
                                         sortable
                                         prop="userName"
                                         label="姓名"
                                         width="120">
                                         </el-table-column>
-                                        <!-- <el-table-column
-                                        prop="address"
-                                        label="地址"
-                                        show-overflow-tooltip>
-                                        </el-table-column> -->
+                                        
                                     </el-table>
                                     <div style="margin-top: 20px">
                                         <el-button @click="addChosenUser">添加</el-button>
@@ -95,23 +87,14 @@
                                         width="55">
                                         </el-table-column>
                                         
-                                        <!-- <el-table-column
-                                        prop="userNickName"
-                                        label="昵称"
-                                        width="120">
-                                        <template slot-scope="scope">{{ scope.data.userNickName }}</template>
-                                        </el-table-column> -->
+                                        
                                         <el-table-column
                                         sortable
                                         prop="userName"
                                         label="姓名"
                                         width="120">
                                         </el-table-column>
-                                        <!-- <el-table-column
-                                        prop="address"
-                                        label="地址"
-                                        show-overflow-tooltip>
-                                        </el-table-column> -->
+                                        
                                     </el-table>
 
                                     <div style="margin-top: 20px">
@@ -121,11 +104,8 @@
                                 </div>
                             </div>
                         </el-dialog>
-
                     </el-form-item>
                     
-                    
-
                     <el-form-item>
                         <el-button type="primary" style="width:200px" @click="onSubmit">发送</el-button>
                     </el-form-item>
@@ -214,26 +194,7 @@ export default {
                     type: error
                 })
             }
-            // return [
-            //     {'userId':'00000001','userName':'肖宇'},
-            //     {'userId':'00000002','userName':'刘顺'},
-            //     {'userId':'00000003','userName':'亚托克斯'},
-            //     {'userId':'00000004','userName':'艾瑞利亚'},
-            //     {'userId':'00000005','userName':'瑟提'},
-            //     {'userId':'00000006','userName':'德莱厄斯'},
-            //     {'userId':'00000007','userName':'五条悟'},
-            //     {'userId':'00000008','userName':'柯南'},
-            //     {'userId':'00000009','userName':'基德'},
-            //     {'userId':'000000010','userName':'佐助'},
-            //     {'userId':'000000011','userName':'小李'},
-            //     {'userId':'000000012','userName':'小王'},
-            //     {'userId':'000000013','userName':'老秦'},
-            //     {'userId':'000000014','userName':'一朵云'},
-            //     {'userId':'000000015','userName':'小帆帆'},
-            //     {'userId':'000000016','userName':'乌鱼子'},
-            //     {'userId':'000000017','userName':'句子'},
-            //     {'userId':'000000018','userName':'梨花'}
-            // ]
+            
         },
 
         handleSelectionChange(val) {
@@ -243,8 +204,6 @@ export default {
         handleSelectionChangeChosen(val){
             this.multipleSelectionChose = val;
         },
-        
-        
         
         addIntoList(){
             console.log("响应click")
@@ -315,8 +274,7 @@ export default {
             
         },
         
-    
-        async onSubmit() {
+        async uploadNoticeData() {
             try {
                 let params = {
                     'noticeTitle': this.form.noticeTitle,
@@ -324,6 +282,11 @@ export default {
                     'noticeUserList': this.form.noticeUserList
                 };
                 await this.$api.notice.noticeSomeUsers(params);
+                this.$message({
+                    message: '通知发送成功',
+                    duration: 2000,
+                    type: success
+                })
             } catch (error) {
                 this.$message({
                     message: '通知发送失败',
@@ -331,6 +294,17 @@ export default {
                     type: error
                 })
             }
+        },
+    
+        onSubmit() {
+            this.$refs['form'].validate((valid) => {
+                if(valid) {
+                    this.uploadNoticeData();
+                } else {
+                    return false;
+                }
+            })
+            
         },
     },
     mounted() {

@@ -34,14 +34,37 @@ const notice = {
      */
     getAllUsers() {
         return request({
-            url: '/user-serve/user/back/getAllUsers',
+            url: '/user-server/user/back/getAllUsers',
             method: 'get',
         })
     },
 
+    /**
+     * 
+     * @param {object} params 
+     * @returns 
+     */
     noticeSomeUsers(params) {
         return request({
             url: '/user-server/notice/back/noticeSomeUsers',
+            method: 'post',
+            data: params
+        })
+    },
+
+    /**
+     * 
+     * @param {object} params 
+     * params {
+     *      noticeTitle: null,
+     *      noticeContent: null,
+     *      competitionId: null
+     * }
+     * @returns 
+     */
+    noticeAwardUsers(params) {
+        return request({
+            url: '/user-server/notice/back/noticeAwardUsers',
             method: 'post',
             data: params
         })

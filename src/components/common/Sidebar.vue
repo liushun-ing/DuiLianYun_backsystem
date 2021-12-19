@@ -126,29 +126,35 @@ export default {
                     title: '比赛相关',
                     subs: [
                         {
-                            index: '/competition_about/ActivityManage',
+                            index: '/competition_about/CompetitionManage',
                             title: '比赛管理'
                         },
                         {
-                            index: '/competition_about/ActivityPush',
+                            index: '/competition_about/CompetitionPush',
                             title: '比赛发布'
                         },
+                        
                         {
-                            index: '/competition_about/ActivityCoupletManage',
-                            title: '比赛作品评选'
-                        },
-                        {
-                            index: '/competition_about/ActivityAwardManage',
+                            index: '/competition_about/CompetitionAwardManage',
                             title: '获奖作品入库管理'
                         },
                         {
-                            index: '/competition_about/OneActivityCoupletManage',
-                            title: '单个比赛作品评选'
+                            index: '/competition_about/FirstReview',
+                            title: '一审投稿'
                         },
                         {
-                            index: '/competition_about/OneActivityAwardManage',
-                            title: '单个获奖作品入库管理'
+                            index: '/competition_about/SecondReview',
+                            title: '二审投稿'
                         },
+                        {           
+                            index: '/competition_about/DistributeThePrize',
+                            title: '分发奖项'
+                        },
+                        {
+                            index: '/competition_about/ManuscriptView',
+                            title: '投稿浏览'
+                        },
+                        
                     ]
                 },
                 {
@@ -178,6 +184,10 @@ export default {
                         {
                             index: '/notice_about/AllMemberNoticePush',
                             title: '所有会员通知推送'
+                        },
+                        {
+                            index: '/notice_about/AwardNoticePush',
+                            title: '获奖通知'
                         },
                         {
                             index: '/notice_about/AssignedUserNoticePush',

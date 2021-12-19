@@ -20,7 +20,7 @@
                             type="datetime" value-format="yyyy-MM-dd HH:mm:ss" class="input-class">
                         </el-date-picker>
                     </el-form-item>
-                    <el-form-item label="活动结束时间" prop="eventDateTo">
+                    <el-form-item label="比赛结束时间" prop="eventDateTo">
                         <el-date-picker
                             v-model="form.eventDateTo"
                             type="datetime" value-format="yyyy-MM-dd HH:mm:ss" class="input-class">

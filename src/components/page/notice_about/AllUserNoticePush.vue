@@ -56,8 +56,20 @@ export default {
                         noticeTitle: this.form.noticeTitle,
                         noticeContent: this.form.noticeContent
                     }
+                    
                     try{
                         await this.$api.notice.noticeAllUsers(params);
+
+                        this.$message({
+                            message: '通知发送成功',
+                            duration: 2000,
+                            type: 'success'
+                        })
+                        this.form = {
+                            noticeTitle: null,
+                            noticeContent: null
+                        }
+                        console.log(this.form);
                     } catch(error) {
                         this.$message({
                             message: '通知发送失败',

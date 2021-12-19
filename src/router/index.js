@@ -69,33 +69,38 @@ export default new Router({
                     meta: { title: '帖子管理' }
                 },
                 {
-                    path: '/competition_about/ActivityManage',
-                    component: () => import(/* webpackChunkName: "ActivityManage" */ '../components/page/competition_about/ActivityManage.vue'),
+                    path: '/competition_about/CompetitionManage',
+                    component: () => import(/* webpackChunkName: "ActivityManage" */ '../components/page/competition_about/CompetitionManage.vue'),
                     meta: { title: '比赛管理' }
                 },
                 {
-                    path: '/competition_about/ActivityPush',
-                    component: () => import(/* webpackChunkName: "ActivityPush" */ '../components/page/competition_about/ActivityPush.vue'),
+                    path: '/competition_about/CompetitionPush',
+                    component: () => import(/* webpackChunkName: "ActivityPush" */ '../components/page/competition_about/CompetitionPush.vue'),
                     meta: { title: '比赛发布' }
                 },
                 {
-                    path: '/competition_about/ActivityCoupletManage',
-                    component: () => import(/* webpackChunkName: "ActivityCoupletManage" */ '../components/page/competition_about/ActivityCoupletManage.vue'),
-                    meta: { title: '比赛作品评选' }
+                    path: '/competition_about/FirstReview',
+                    component: () => import(/* webpackChunkName: "FirstReview" */ '../components/page/competition_about/FirstReview.vue'),
+                    meta:{title: '一审投稿'}
                 },
                 {
-                    path: '/competition_about/OneActivityCoupletManage',
-                    component: () => import(/* webpackChunkName: "OneActivityCoupletManage" */ '../components/page/competition_about/OneActivityCoupletManage.vue'),
-                    meta: { title: '单个比赛作品评选' }
+                    path: '/competition_about/SecondReview',
+                    component: () => import(/* webpackChunkName: "SecondReview" */ '../components/page/competition_about/SecondReview.vue'),
+                    meta:{title: '二审投稿'}
                 },
                 {
-                    path: '/competition_about/OneActivityAwardManage',
-                    component: () => import(/* webpackChunkName: "OneActivityAwardManage" */ '../components/page/competition_about/OneActivityAwardManage.vue'),
-                    meta: { title: '单个比赛获奖作品入库管理' }
+                    path: '/competition_about/DistributeThePrize',
+                    component: () => import(/* webpackChunkName: "DistributeThePrize" */ '../components/page/competition_about/DistributeThePrize.vue'),
+                    meta:{title: '分发奖项'}
                 },
                 {
-                    path: '/competition_about/ActivityAwardManage',
-                    component: () => import(/* webpackChunkName: "ActivityAwardManage" */ '../components/page/competition_about/ActivityAwardManage.vue'),
+                    path: '/competition_about/ManuscriptView',
+                    component: () => import(/* webpackChunkName: "ManuscriptView" */ '../components/page/competition_about/ManuscriptView.vue'),
+                    meta:{title: '投稿浏览'}
+                },
+                {
+                    path: '/competition_about/CompetitionAwardManage',
+                    component: () => import(/* webpackChunkName: "ActivityAwardManage" */ '../components/page/competition_about/CompetitionAwardManage.vue'),
                     meta: { title: '获奖作品入库管理' }
                 },
                 {
@@ -117,6 +122,11 @@ export default new Router({
                     path: '/notice_about/AllMemberNoticePush',
                     component: () => import(/* webpackChunkName: "AllMemberNoticePush" */ '../components/page/notice_about/AllMemberNoticePush.vue'),
                     meta: { title: '所有会员通知推送' }
+                },
+                {
+                    path: '/notice_about/AwardNoticePush',
+                    component: () => import(/* webpackChunkName: "AwardNoticePush" */ '../components/page/notice_about/AwardNoticePush.vue'),
+                    meta:{title: '获奖通知'}
                 },
                 {
                     path: '/notice_about/AssignedUserNoticePush',
