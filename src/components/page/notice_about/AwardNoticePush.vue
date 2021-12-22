@@ -9,46 +9,64 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="form-box">
-                <el-form ref="form" :rules="rules" :model="form" label-width="80px">
-                    <el-form-item label="通知名称" prop="noticeTitle">
-                        <el-input style="width:250px" v-model="form.noticeTitle"></el-input>
-                    </el-form-item>
+            <div style="display: flex;align-content: space-between;">
+                <div class="form-box">
+                    <div style="width: 500px;border-right:#e6e6e6 solid 1px;">
+                        <el-form ref="form" :rules="rules" :model="form" label-width="80px">
+                            <el-form-item label="通知名称" prop="noticeTitle">
+                                <el-input style="width:250px" v-model="form.noticeTitle" placeholder="如:第一届金鸽诗词大赛获奖通知"></el-input>
+                            </el-form-item>
 
-                    <el-form-item label="通知内容" prop="noticeContent">
-                        <el-input type="textarea" class="introduction" rows="5" v-model="form.noticeContent"></el-input>
-                    </el-form-item>
-                    
+                            <el-form-item label="通知内容" prop="noticeContent">
+                                <el-input type="textarea" class="introduction" rows="5" v-model="form.noticeContent" placeholder="只需输入通知正文内容"></el-input>
+                            </el-form-item>
+                            
 
-                    <el-form-item label='比赛' prop='competitionId'>
-                        <el-select v-model="selectedCompetitionId" placeholder="请选择比赛" >
-                            <el-option
-                            v-for="item in competitionList"
-                            :key="item.competitionId"
-                            :label="item.competitionName"
-                            :value="item.competitionId">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" style="width:200px" @click="onSubmit">发送</el-button>
-                    </el-form-item>
-                </el-form>
+                            <el-form-item label='比赛'>
+                                <el-select v-model="selectedCompetitionId" placeholder="请选择比赛" @change="handleSelected">
+                                    <el-option
+                                    v-for="item in competitionList"
+                                    :key="item.competitionId"
+                                    :label="item.competitionName"
+                                    :value="item.competitionId">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" style="width:200px" @click="onSubmit">发送</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </div>
+                <div class='template-box'>
+                    <el-descriptions title="通知预览">
+                        <el-descriptions-item label="用户">沉梦昂志</el-descriptions-item>
+                        <el-descriptions-item label="奖项">一等奖</el-descriptions-item>
+                    </el-descriptions>
+                    <el-input type="textarea" class="introduction" rows="5" v-model="templateNoticeCreator" placeholder="只需输入通知正文内容"></el-input>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
-<script>
+<script scoped>
 export default {
     data() {
         return {
             form: {
                 noticeTitle: null,
-                noticeContent: null,
+                noticeContent: '',
                 competitionId: null
             },
+        
+            noticeTemplate: {
+                userName: '沉梦昂志',
+                award: '一等奖',
+                competitionName: ''
+            },
 
+            
             selectedCompetitionId: '',
             competitionList: [{
                 competitionId: null,
@@ -72,7 +90,20 @@ export default {
         this.initCompetitionList();
         this.sortByTime(this.competitionList);
     },
+    computed:{
+        templateNoticeCreator(){
+            console.log(this);
+            return '  恭喜您，'+ this.noticeTemplate.userName+'\n  您在'+this.noticeTemplate.competitionName+'中荣获'+this.noticeTemplate.award+'！\n  '+ this.form.noticeContent;
+        }
+    },
     methods: {
+        handleSelected() {
+            for(let index = 0; index < this.competitionList.length; index ++){
+                if(this.competitionList[index].competitionId == this.selectedCompetitionId) this.noticeTemplate.competitionName = this.competitionList[index].competitionName;
+            }
+                
+        },
+
         sortByTime(array){
             return array.sort(function(a,b){
                 let time1 = a.startTime;
@@ -102,7 +133,7 @@ export default {
                 if(valid) {
                     let params = {
                         noticeTitle: this.form.noticeTitle,
-                        noticeContent: this.form.noticeContent,
+                        noticeContent: '  恭喜您，{manuscriptUserName}\n  您在'+this.noticeTemplate.competitionName+'中荣获{awardDetail}！\n  '+ this.form.noticeContent,
                         competitionId: this.selectedCompetitionId
                     }
                     try{
@@ -115,9 +146,8 @@ export default {
                         })
                         this.form = {
                             noticeTitle: null,
-                            noticeContent: null
+                            noticeContent: ''
                         }
-                        console.log(this.form);
                     } catch(error) {
                         this.$message({
                             message: '通知发送失败',
@@ -142,7 +172,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .avatar-uploader .el-upload {
     width: 160px;
     height: 200px;
@@ -171,4 +201,18 @@ export default {
 .introduction{
     width: 250px;
 }
+.template-box{
+    display:flex;
+    flex-direction: column;
+    width:500px;
+    padding-left: 40px;
+}
+.template-content{
+    margin-top: 20px;
+    padding: 10px;
+    width: 300px;
+    height: 300px;
+    border: #e6e6e6 solid 1px;
+}
+
 </style>

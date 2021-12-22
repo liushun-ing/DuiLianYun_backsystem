@@ -43,7 +43,7 @@ const competition = {
         return request({
             url: '/post-server/competition/back/getManuscriptFirst',
             method: 'get',
-            data: params
+            params: params
         })
     },
 
@@ -57,7 +57,7 @@ const competition = {
         return request({
             url:'/post-server/competition/back/uploadReviewDataFirst',
             method: 'post',
-            data:params   
+            data:params
         })
     },
     
@@ -93,7 +93,7 @@ const competition = {
         return request({
             url: '/post-server/competition/back/getManuscriptSecond',
             method: 'get',
-            data: params
+            params: params
         })
     },
 

@@ -22,10 +22,17 @@
             </div>
 
             <el-table :data="displayManuscriptList" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-                <el-table-column prop="userName" label="作者姓名"></el-table-column>
-                <el-table-column prop="userPrivince" label="作者省份"></el-table-column>
-                <el-table-column prop="manuscriptTime" label="投稿时间"></el-table-column>
-                <el-table-column prop="manuscriptScore" label="评审分数"></el-table-column>
+                <el-table-column label='投稿内容' align='center'>
+                    <template slot-scope='scope'>
+                        <div class='limit_wrap'>{{scope.row.manuscriptContent}}</div>    
+                    </template> 
+                </el-table-column>
+                <el-table-column prop="manuscriptCreateTime" label="投稿时间"></el-table-column>
+                <el-table-column label="一审分数" align="center">
+                    <template slot-scope="scope">
+                        <div v-if='scope.row.score != -1'>{{scope.row.score}}</div>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
                         <el-button v-if='!scope.row.manuscriptScore' type="text" icon="el-icon-edit" class="blue" @click="handleReview(scope.$index, scope.row)"
@@ -84,7 +91,16 @@
 export default {
     name: 'FirstReview',
     data() {
-        
+        var checkScore = (rule, value, callback) => {
+            if(!value) {
+                return callback(new Error('请输入评审分数'));
+            } else if(value < 0 || value > 100) {
+                return callback(new Error('分数应该在0~100'))
+            } else {
+                callback();
+            }
+
+        }
         return {
             //选择的比赛的id
             selectedCompetitionId: null,
@@ -120,17 +136,17 @@ export default {
 
             //选择评审的投稿
             manuscriptData: {
-                manuscriptId: '',
-                competitionId: '',
-                userName:'',
-                userPrivince: '',
-                manuscriptTime: '',
-                manuscriptContent: '',
+                competitionId: "11111115",
+                manuscriptContent: "",
+                manuscriptCreateTime: "2021-11-30",
+                manuscriptId: "1465640638007046145",
+                manuscriptUserName: "刘顺",
+                manuscriptUserProvince: "湖南"
             },
 
             //对投稿的评审信息
             reviewData: {
-                adminId: '',
+                reviewerId: '',
                 manuscriptId: null,
                 score: '',
                 comment: ''
@@ -139,7 +155,8 @@ export default {
             //表单验证规则
             rules:{
                 score: [
-                    {required: true, message: '请输入评分', trigger: 'blur'}
+                    {required: true, message:'请输入评审分数', trigger: 'blur'},
+                    {validator: checkScore, trigger: 'blur'}
                 ],
                 comment:[
                     {required: true, message:'请输入评论', trigger: 'blur'}
@@ -153,12 +170,12 @@ export default {
         this.displayManuscriptList = this.manuscriptList;
         this.total = this.displayManuscriptList.length;
         this.displayManuscriptList = this.displayManuscriptList.slice(0, 10);
-        
+        this.getAllCompetition();
         this.reviewData = {
-            adminId: this.$api.GLOBAL.adminInfo.adminId,
-            comment: '无语子，太棒了',
-            score: 100,
-            manuscriptId: '00001'
+            reviewerId: this.GLOBAL.adminInfo.adminId,
+            comment: '',
+            score: null,
+            manuscriptId: ''
         };
         this.competitionList = this.sortByTime(this.competitionList);
     },
@@ -188,6 +205,7 @@ export default {
             try {
                 let res = await this.$api.competition.getManuscriptFirst(params);
                 this.manuscriptList = res.manuscriptList;
+                console.log(this.manuscriptList);
             } catch (error) {
                 console.log(error);
             }
@@ -214,8 +232,8 @@ export default {
         changePageContent() {
             this.displayManuscriptList = this.manuscriptList.slice(
                 (this.currentPage - 1) * this.pageSize,
-                (this.currentPage ) * this.pageSize >= this.selectedManuscript.length
-                    ? this.selectedManuscript.length
+                (this.currentPage ) * this.pageSize >= this.manuscriptList.length
+                    ? this.manuscriptList.length
                     : (this.currentPage ) * this.pageSize
             );
         },
@@ -225,7 +243,7 @@ export default {
             this.manuscriptData = this.manuscriptList[index];
             this.dialogFormVisible = true;
             this.reviewData.manuscriptId = this.manuscriptData.manuscriptId;
-            console.log(this.reviewData)
+            console.log(this.reviewData);
         },
 
         //dialog中的取消，应该提醒用户
@@ -247,10 +265,13 @@ export default {
         },
 
         //筛选
-        handleSelected() {
-            this.getFirstReviewManuscript();
+        async handleSelected() {
+            await this.getFirstReviewManuscript();
+            this.displayManuscriptList = this.manuscriptList;
+            this.displayManuscriptList.manuscriptScore = 0;
             // let _this = this;
             // this.selectedManuscript = this.manuscriptList.filter(this.selectFilter(_this));
+
             this.currentPage = 1;
             this.total = this.manuscriptList.length;
             this.changePageContent();
@@ -274,32 +295,50 @@ export default {
 
         //处理刷新
         handleRefresh() {
-            this.getFirstReviewManuscript();
-            this.handleReset();
+            this.currentPage = 1;
+            this.getAllCompetition();
+            this.displayManuscriptList = this.manuscriptList;
+            this.displayManuscriptList = null;
+            this.selectedCompetitionId = null;
+            this.total = this.displayManuscriptList.length;
+            
+            this.reviewData = {
+                reviewerId: this.GLOBAL.adminInfo.adminId,
+                comment: '',
+                score: null,
+                manuscriptId: ''
+            };
+            this.competitionList = this.sortByTime(this.competitionList);
         },
 
-        async handleConfirm() {
+        handleConfirm() {
             this.$refs['review'].validate(async (valid) => {
-                if(!valid) {
+                if(valid) {
                     let reviewData = this.reviewData;
                     try {  
-                        await this.$competition.uploadReviewDataFirst(reviewData);
+                        await this.$api.competition.uploadReviewDataFirst(reviewData);
                         this.$message({
                             message: '评审成功',
                             duration: 2000,
                             type: 'success'
                         });
-                        this.displayManuscriptList.forEach((item) => {
-                            if(item.manuscriptId === this.reviewData.manuscriptId) {
-                                item.manuscriptScore = this.reviewData.score;
+
+                        for(let i = 0; i < this.displayManuscriptList.length; i ++){
+                            if(this.displayManuscriptList[i].manuscriptId === this.reviewData.manuscriptId) {
+                                this.displayManuscriptList[i].score = this.reviewData.score;
+                                console.log("this.displayManuscriptList[i].manuscriptScore"+this.displayManuscriptList[i].manuscriptScore)
+                                console.log("score:"+this.reviewData.score)
                             }
-                        })
-                        this.manuscriptList.forEach((item) => {
-                            if(item.manuscriptId === this.reviewData.manuscriptId) {
-                                item.manuscriptScore = this.reviewData.score;
+                        }
+                        
+                        for(let i = 0; i < this.manuscriptList.length; i ++){
+                            if(this.manuscriptList[i].manuscriptId === this.reviewData.manuscriptId) {
+                                this.manuscriptList[i].score = this.reviewData.score;
                             }
-                        })
+                        }
                         this.dialogFormVisible = false;
+                        this.reviewData.score = null;
+                        this.reviewData.comment = null;
                     } catch(error) {
                         console.log(error);
                     }
@@ -307,14 +346,14 @@ export default {
                     this.$message({
                         message: '请先填写评分和评论',
                         duration: 2000,
-                        type: warning
+                        type: 'warning'
                     })
                 }
             })
             
         }
     }
-};
+}
 </script>
 
 <style>
@@ -357,5 +396,12 @@ export default {
     width: 50%;
     height: 100%;
     padding-left: 10px;
+}
+.limit_wrap {
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
 }
 </style>

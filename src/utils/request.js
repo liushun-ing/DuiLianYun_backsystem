@@ -32,8 +32,7 @@ service.interceptors.request.use(
 
 // 设置post请求头
 service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-// 设置get请求头
-service.defaults.headers.get['Content-Type'] = 'application/json;charset=utf-8';
+
 
 
 // 返回体拦截器
