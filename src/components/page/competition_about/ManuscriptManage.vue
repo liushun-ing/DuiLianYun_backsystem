@@ -150,6 +150,9 @@
                 <el-form-item label="投稿编号" prop="manuscriptId">
                     <el-input v-model="editForm.manuscriptId" :disabled="true"></el-input>
                 </el-form-item>
+                <el-form-item label="投稿省份" prop="manuscriptUserProvince">
+                    <el-input type="textarea" autosize v-model="editForm.manuscriptUserProvince"></el-input>
+                </el-form-item>
                 <el-form-item label="投稿内容" prop="manuscriptContent">
                     <el-input type="textarea" :autosize="{ minRows: 10, maxRows: 12 }" v-model="editForm.manuscriptContent"></el-input>
                 </el-form-item>
@@ -460,11 +463,13 @@ export default {
                     this.editVisible = false;
                     let params = {
                         manuscriptId: this.editForm.manuscriptId,
+                        manuscriptUserProvince: this.editForm.manuscriptUserProvince,
                         manuscriptContent: this.editForm.manuscriptContent
                     };
                     try {
                         await this.$api.competition.modifyManuscript(params);
                         this.$set(this.manuscriptList, this.editIndex, this.editForm);
+                        this.$set(this.allManuscript, (this.currentPage - 1) * this.pageSize + this.editIndex, this.editForm);
                         this.$message({
                             message: '修改成功',
                             duration: 2000,
